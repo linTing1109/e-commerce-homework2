@@ -1,0 +1,83 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /training
+    session:
+      timeout: 30m
+  tomcat:
+    threads:
+      max: 200
+    uri-encoding: UTF-8
+    basedir: /data/logs/training/access_log
+    accesslog:
+      enabled: true
+      pattern: '{"i":"%{X-Forwarded-For}i","a":"%a","A":"%A","t":"%{yyyy-MM-dd HH:mm:ss.SSS}t","m":"%m","U":"%U","s":%s,"b":%b,"D":%D,"I":"%I"}'
+      suffix: .log
+
+
+
+spring:
+  profiles:
+    active: local
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 200
+
+# 建立 DataSource 設置 prefix 前綴 springboot.datasource.oracle (自訂)
+# 最後一層設置 jdbc-url、username、password、driverClassName、maximumPoolSize、connectionTimeout (預設)
+springboot:
+  datasource:
+    oracle:
+      jdbc-url: jdbc:oracle:thin:@localhost:1521:xe
+      username: LOCAL
+      password: root
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      maximumPoolSize: 2
+      connectionTimeout: 30000
+    
+  # 發送郵件配置 (密碼就是學習使用的英文對照
+spring.mail:
+  # SMTP伺服器地址
+  host: smtp.gmail.com
+  # SMTP伺服器端口號 Gmail 的 SMTP 服務預設使用 587 端口，但有時也可以使用 465 端口進行 SSL 連接
+  # 原本試587不行 現在465可以
+  port: 465
+  username: javaStudy1109@gmail.com
+  password: loktmszpmdkjhpns
+  properties:
+  # 開啟用戶身份驗證
+    mail.smtp.auth: true
+    # STARTTLS：一種通信協議，具體可以搜索下
+    mail.smtp.starttls.enable: true
+    mail.smtp.starttls.required: true
+    mail.smtp.ssl.enable : true
+    mail.socketFactory.port: 465
+    mail.socketFactory.class: javax.net.ssl.SSLSocketFactory
+    mail.socketFactory.fallback: false
+    
+## 緩存配置 開發階段應該配置為false 因為經常會改
+#spring.freemarker.cache: false
+## 模版後綴名 默認為ftl
+#spring.freemarker.suffix: .html
+## 文件編碼
+#spring.freemarker.charset: UTF-8
+## 模版加載的目錄
+#spring.freemarker.template-loader-path: classpath:/templates/
+## 配置
+## locale 該選項指定該模板所用的國家/語言選項
+## number_format 指定格式化輸出數字的格式：currency、
+## boolean_format 指定兩個布爾值的語法格式,默認值是true,false
+## date_format,time_format,datetime_format 定格式化輸出日期的格式
+## time_zone 設置格式化輸出日期時所使用的時區
+## 數字 千分位標識
+##spring.freemarker.settings.number_format: ',##0.00'
+    

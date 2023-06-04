@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "springboot.datasource.oracle",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.ecommerce.config.DB_DataSourceConfig",
+      "sourceMethod": "public javax.sql.DataSource oracleDataSource() "
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

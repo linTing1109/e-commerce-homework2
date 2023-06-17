@@ -1,30 +1,22 @@
 package com.ecommerce.dao;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
-
 import com.ecommerce.entity.BeverageGoods;
-import com.ecommerce.entity.BeverageMember;
-import com.ecommerce.entity.BeverageOrder;
 import com.ecommerce.vo.GenericPageable;
 import com.ecommerce.vo.GoodsDataCondition;
-import com.ecommerce.vo.GoodsReportSales;
+
 
 @Repository
 public class CriteriaQueryDao { //自己寫criteria 所以就不需要繼承

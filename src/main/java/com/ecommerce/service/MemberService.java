@@ -27,93 +27,95 @@ import com.ecommerce.vo.MemberInfoVo;
 
 @Service
 public class MemberService {
-private static Logger logger = LoggerFactory.getLogger(MemberService.class);
-	
+	private static Logger logger = LoggerFactory.getLogger(MemberService.class);
+
+	//透過Autowired的方式注入不同的實作
 	@Autowired
 	private BeverageGoodsDao beverageGoodsDao;
-	
+
 	@Autowired
 	private BeverageMemberDao beverageMemberDao;
-	
+
 	@Autowired
 	private BeverageOrderDao beverageOrderDao;
 
 	@Resource(name = "sessionCartGoods")
 	private List<GoodsVo> cartGoods;
-	
-	@Resource(name="member")
+
+	@Resource(name = "member")
 	private MemberInfo sessionMemberInfo;
-	
-	public List<GoodsVo> addCartGoods(GoodsVo goodsVo){
+
+	public List<GoodsVo> addCartGoods(GoodsVo goodsVo) {
 		BeverageGoods beverageGoods = beverageGoodsDao.findByGoodsID(goodsVo.getGoodsID());
-		//運用id查到實際商品資訊 塞回去秀出來
-		if(beverageGoods !=null) { //有這筆ID才放入購物車 否則不放入
-			goodsVo = GoodsVo.builder()
-					.goodsID(beverageGoods.getGoodsID())
-					.goodsName(beverageGoods.getGoodsName())
-					.description(beverageGoods.getDescription())
-					.price(beverageGoods.getGoodsPrice())
-					.quantity(beverageGoods.getGoodsQuantity())
-					.imageName(beverageGoods.getGoodsImageName()).build();
+		// 運用id查到實際商品資訊 塞回去秀出來
+		if (beverageGoods != null) { // 有這筆ID才放入購物車 否則不放入
+			goodsVo = GoodsVo.builder().goodsID(beverageGoods.getGoodsID()).goodsName(beverageGoods.getGoodsName())
+					.description(beverageGoods.getDescription()).price(beverageGoods.getGoodsPrice())
+					.quantity(beverageGoods.getGoodsQuantity()).imageName(beverageGoods.getGoodsImageName()).build();
 			cartGoods.add(goodsVo);
 		}
-		
+
 		return cartGoods;
-				
+
 	}
-	
-	public MemberInfoVo addMember(MemberInfoVo memberInfoVo){
-		BeverageMember beverageMember=beverageMemberDao.findByIdentificationNo(memberInfoVo.getIdentificationNo());
-		if(beverageMember !=null) {//帳號存在
-//			beverageMember = null;
+
+	public MemberInfoVo addMember(MemberInfoVo memberInfoVo) {
+		BeverageMember beverageMember = beverageMemberDao.findByIdentificationNo(memberInfoVo.getIdentificationNo());
+		if (beverageMember != null) {// 帳號存在
 			memberInfoVo.setLoginMessage("帳號存在 新增失敗");
 			memberInfoVo.setIsLogin(false);
 			logger.info("帳號存在 新增失敗");
-		}else {
-			beverageMember=new BeverageMember();
+		} else {
+			beverageMember = new BeverageMember();
 			beverageMember.setIdentificationNo(memberInfoVo.getIdentificationNo());
-	        beverageMember.setCustomerName(memberInfoVo.getCusName());
-	        beverageMember.setPassword(memberInfoVo.getCusPassword());
+			beverageMember.setCustomerName(memberInfoVo.getCusName());
+			beverageMember.setPassword(memberInfoVo.getCusPassword());
 			beverageMemberDao.save(beverageMember);
 			memberInfoVo.setIsLogin(true);
 			memberInfoVo.setLoginMessage("帳號新增成功");
 		}
 		return memberInfoVo;
 	}
-	
-	public GoodsReportSalesInfo queryGoodsSales(GoodsSalesReportCondition condition, GenericPageable genericPageable,String cusName) {		
-		//算出資料開始的頭與尾
-		int rowStart=((genericPageable.getCurrentPageNo()-1)*genericPageable.getPageDataSize())+1;
-		int rowEnd=((genericPageable.getCurrentPageNo()-1)*genericPageable.getPageDataSize())+genericPageable.getPageDataSize();
 
-		String sort=condition.getSort();//排序設定
-		String orderByItem=condition.getOrderByItem();//排序類別
-		GoodsReportSalesInfo goodsReportSalesInfo=new GoodsReportSalesInfo();
-//		List<GoodsReportSales> goodsReportSales=beverageOrderDao.queryGoodSalesNumberASC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem);	
-		List<GoodsReportSales> goodsReportSales=new LinkedList<>();
-		if(sort.equals("ASC") ) {// 如果是排序商品名稱  (也就是文字類型)
-			if(orderByItem.equals("goodsName") ) {
-				goodsReportSales=beverageOrderDao.queryMemberOrderTextASC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem,cusName);
-			}else{ //排序的是數字類型
-				goodsReportSales=beverageOrderDao.queryMemberOrderNumberASC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem,cusName);	
+	public GoodsReportSalesInfo queryGoodsSales(GoodsSalesReportCondition condition, GenericPageable genericPageable,
+			String cusName) {
+		// 算出資料開始的頭與尾
+		int rowStart = ((genericPageable.getCurrentPageNo() - 1) * genericPageable.getPageDataSize()) + 1;
+		int rowEnd = ((genericPageable.getCurrentPageNo() - 1) * genericPageable.getPageDataSize())
+				+ genericPageable.getPageDataSize();
+
+		String sort = condition.getSort();// 排序設定
+		String orderByItem = condition.getOrderByItem();// 排序類別
+		GoodsReportSalesInfo goodsReportSalesInfo = new GoodsReportSalesInfo();
+	
+		List<GoodsReportSales> goodsReportSales = new LinkedList<>();
+		if (sort.equals("ASC")) {// 如果是排序商品名稱 (也就是文字類型)
+			if (orderByItem.equals("goodsName")) {
+				goodsReportSales = beverageOrderDao.queryMemberOrderTextASC(condition.getStartDate(),
+						condition.getEndDate(), rowStart, rowEnd, orderByItem, cusName);
+			} else { // 排序的是數字類型
+				goodsReportSales = beverageOrderDao.queryMemberOrderNumberASC(condition.getStartDate(),
+						condition.getEndDate(), rowStart, rowEnd, orderByItem, cusName);
 			}
-		}else {
-			if(orderByItem.equals("goodsName")) {
-				goodsReportSales=beverageOrderDao.queryMemberOrderTextDESC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem,cusName);
-			}else{
-				goodsReportSales=beverageOrderDao.queryMemberOrderNumberDESC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem,cusName);	
+		} else {
+			if (orderByItem.equals("goodsName")) {
+				goodsReportSales = beverageOrderDao.queryMemberOrderTextDESC(condition.getStartDate(),
+						condition.getEndDate(), rowStart, rowEnd, orderByItem, cusName);
+			} else {
+				goodsReportSales = beverageOrderDao.queryMemberOrderNumberDESC(condition.getStartDate(),
+						condition.getEndDate(), rowStart, rowEnd, orderByItem, cusName);
 			}
 		}
-			
-		//將訂單資訊&頁面相關 塞回goodsReportSalesInfo
+
+		// 將訂單資訊&頁面相關 塞回goodsReportSalesInfo
 		goodsReportSalesInfo.setGoodsReportSalesList(goodsReportSales);
-		genericPageable.setDataTotalSize(goodsReportSales.get(0).getOrderCount());//將總筆數統一放入genericPageable內
-		//給容器讓Pagination可以塞值
-		Set<Integer> number=new HashSet<>();
+		genericPageable.setDataTotalSize(goodsReportSales.get(0).getOrderCount());// 將總筆數統一放入genericPageable內
+		// 給容器讓Pagination可以塞值
+		Set<Integer> number = new HashSet<>();
 		genericPageable.setPagination(number);
-		
+
 		goodsReportSalesInfo.setGenericPageable(genericPageable);
-		
+
 		return goodsReportSalesInfo;
 	}
 }

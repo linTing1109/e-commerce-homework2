@@ -1,6 +1,5 @@
 package com.ecommerce.vo;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
-public class GenericPageable {
+public class GenericPageable { //頁碼相關資訊
 	
 	private int currentPageNo;//目前頁面 
 	private int pageDataSize;//每頁面顯示的筆數  

@@ -2,8 +2,6 @@ package com.ecommerce.vo;
 
 import java.util.List;
 
-import com.ecommerce.entity.BeverageOrder;
-
 import lombok.Data;
 
 @Data

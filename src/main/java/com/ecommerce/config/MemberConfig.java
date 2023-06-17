@@ -10,17 +10,19 @@ import org.springframework.web.context.annotation.SessionScope;
 import com.ecommerce.vo.GoodsVo;
 import com.ecommerce.vo.MemberInfo;
 
-@Configuration
+@Configuration //SpringBoot專案 標記類為配置類
 public class MemberConfig {
+	
 	@Bean(name="member")
-	@SessionScope
-	public MemberInfo sessionMemberInfo(){
+	@SessionScope //可跨HttpRequest 之間存取,範圍HTTP session
+	public MemberInfo sessionMemberInfo(){ //會員相關資料
 		return MemberInfo.builder().isLogin(false).build();
 	}
 	
+	
 	@Bean
-	@SessionScope
-	public List<GoodsVo> sessionCartGoods(){
+	@SessionScope //可跨HttpRequest 之間存取,範圍HTTP session
+	public List<GoodsVo> sessionCartGoods(){ //購物車
 		return new ArrayList<GoodsVo>();
 	}
 }

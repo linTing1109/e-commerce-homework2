@@ -11,8 +11,13 @@ import com.ecommerce.vo.GoodsReport;
 import com.ecommerce.vo.GoodsReportSales;
 import com.ecommerce.vo.SellWellGoods;
 
-@Repository
+@Repository //標記資料庫交易持久層DAO元件
 public interface BeverageOrderDao extends JpaRepository<BeverageOrder, Long>{
+	//繼承JpaRepository 就可以寫 語法關鍵字 及 實體屬性欄位 所組合的抽象方法
+	/*
+	 * 下面使用的都是JPQL的自定義"資料反射欄位對應"(資料參考p.70)
+	 * 建立介面定義所回傳的資料物件 並透過getXXX方法對應所查詢的欄位別名
+	 */
 	
 	//後臺銷售報表使用
 	/*SQL測試
@@ -58,9 +63,7 @@ public interface BeverageOrderDao extends JpaRepository<BeverageOrder, Long>{
 		nativeQuery = true)
 	List<SellWellGoods> sellWellGoods(String startDate, String endDate);
 	
-	
-//	List<BeverageOrder> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate);
-//	List<BeverageOrder> findByOrderDateBetweenAndOrderIDIsNotNull(LocalDateTime startDate, LocalDateTime endDate,Pageable pageable);
+	//查詢全部訂單使用(含不同項目的排序)
 	/*這是SQL測試用
 		 * SELECT roworderNumber, orderID, orderDate, customerName, goodsID, goodsName, goodsBuyPrice, buyQuantity, orderCount,quantity 
 	FROM (
@@ -161,7 +164,7 @@ public interface BeverageOrderDao extends JpaRepository<BeverageOrder, Long>{
 	List<GoodsReportSales> queryGoodSalesTextDESC(String startDate, String endDate, long rowStart, long rowEnd,String orderByItem);
 
 	
-	
+	//查詢個人訂單使用(含不同項目的排序)
 	String sqlOrderNumberASC2 =
 			"SELECT roworderNumber, orderID, orderDate, customerName, goodsID, goodsName, goodsBuyPrice, buyQuantity, orderCount,quantity " + 
 			"FROM " + 
@@ -219,9 +222,6 @@ public interface BeverageOrderDao extends JpaRepository<BeverageOrder, Long>{
 			"WHEN 'goodsName' THEN goodsName " +
 			"END ASC)) " + 
 			"WHERE roworderNumber BETWEEN ?3 AND ?4";
-	
-	
-	
 	
 	
 	String sqlOrderTextDESC2 =

@@ -12,8 +12,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,6 @@ import com.ecommerce.entity.BeverageGoods;
 import com.ecommerce.entity.BeverageOrder;
 import com.ecommerce.vo.CheckoutCompleteInfo;
 import com.ecommerce.vo.GenericPageable;
-import com.ecommerce.vo.GoodsReport;
 import com.ecommerce.vo.GoodsVo;
 import com.ecommerce.vo.MemberInfo;
 import com.ecommerce.vo.OrderCustomer;
@@ -35,7 +34,7 @@ import com.ecommerce.vo.SellWellGoods;
 
 @Service
 public class FrontendService {
-	private static Logger logger = LoggerFactory.getLogger(FrontendService.class);
+//	private static Logger logger = LoggerFactory.getLogger(FrontendService.class);
 	
 	@Resource(name="member")
 	private MemberInfo sessionMemberInfo;
@@ -43,6 +42,7 @@ public class FrontendService {
 	@Resource(name = "sessionCartGoods") 
 	private List<GoodsVo> cartGoods;
 	
+	//透過Autowired的方式注入不同的實作
 	@Autowired
 	private CriteriaQueryDao criteriaQueryDao;
 	
@@ -64,7 +64,8 @@ public class FrontendService {
 		productGoodsInfo.setGenericPageable(genericPageable);
 		return productGoodsInfo;
 	}
-	@Transactional
+	
+	@Transactional //交易管理
 	public CheckoutCompleteInfo checkoutGoods(OrderCustomer customer) {
 		CheckoutCompleteInfo checkoutCompleteInfo=new CheckoutCompleteInfo();
 		List<OrderGoodsList> orderGoodsAll=new ArrayList<>();
@@ -89,7 +90,6 @@ public class FrontendService {
 				beverageGoods=beverageGoodsOpt.get();
 				// 庫存是否大於預計購買 是:放入預計購買 		否:只放入剩餘庫存量
 				buyQuantity=beverageGoods.getGoodsQuantity()>= buyQuantity ? buyQuantity:beverageGoods.getGoodsQuantity();
-//				if(beverageGoods.getGoodsQuantity()>= buyQuantity) { //庫存>=預計購買才動作
 					//將DB的實際庫存減少
 					beverageGoods.setGoodsQuantity(beverageGoodsOpt.get().getGoodsQuantity()-buyQuantity);
 					//增加DB的order訂單
@@ -112,10 +112,7 @@ public class FrontendService {
 							.buyRealQuantity(buyQuantity)
 							.build();
 					orderGoodsAll.add(orderGoodsList);
-//					cartGoods.clear();//如果完成訂單就清空購物車
-//				}else {//就不動DB內庫存 & 也同時不建立訂單
-//					logger.info("商品餘額不足,商品ID:" + beverageGoods.getGoodsID()+"商品名稱:"+beverageGoods.getGoodsName());
-//				}
+
 				
 			}
 		}

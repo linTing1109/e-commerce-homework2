@@ -49,6 +49,7 @@ public class BackendService {
 
 	private static Logger logger = LoggerFactory.getLogger(BackendService.class);
 	
+	//透過Autowired的方式注入不同的實作
 	@Autowired
 	private BeverageGoodsDao beverageGoodsDao;
 	
@@ -84,7 +85,8 @@ public class BackendService {
 		
 		return beverageGoodsDao.save(beverageGoods);
 	}
-	@Transactional
+	
+	@Transactional //交易管理
 	public BeverageGoods updateGoods(GoodsVo goodsVo) throws IOException {
 		String fileName=null;
 		if(goodsVo.getFile()!=null) {	
@@ -114,9 +116,9 @@ public class BackendService {
 		
 		return beverageGoodsDao.save(beverageGoods);
 	}
+	
 	public List<BeverageGoods> queryAllGoods(){
 		List<BeverageGoods> beverageGoods = beverageGoodsDao.findByGoodsIDIsNotNullOrderByGoodsIDDesc();
-		
 		return beverageGoods;
 	}
 	 
@@ -136,11 +138,13 @@ public class BackendService {
 		//算出資料開始的頭與尾
 		int rowStart=((genericPageable.getCurrentPageNo()-1)*genericPageable.getPageDataSize())+1;
 		int rowEnd=((genericPageable.getCurrentPageNo()-1)*genericPageable.getPageDataSize())+genericPageable.getPageDataSize();
-
+		
+		//原先單一設定ASC goodsID排序
 //		String sort="ASC";//排序設定
 //		String orderByItem="goodsID";//排序類別
 		String sort=condition.getSort();//排序設定
 		String orderByItem=condition.getOrderByItem();//排序類別
+		
 		GoodsReportSalesInfo goodsReportSalesInfo=new GoodsReportSalesInfo();
 //		List<GoodsReportSales> goodsReportSales=beverageOrderDao.queryGoodSalesNumberASC(condition.getStartDate(),condition.getEndDate(),rowStart,rowEnd,orderByItem);	
 		List<GoodsReportSales> goodsReportSales=new LinkedList<>();
@@ -169,51 +173,6 @@ public class BackendService {
 		
 		return goodsReportSalesInfo;
 	}
-//	//目前正確的版本 
-//	public GoodsReportSalesInfo queryGoodsSales(GoodsSalesReportCondition condition, GenericPageable genericPageable) {
-//		//String先轉換成data類型 再轉成自己想要的日期格式
-//		DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-//		Date dateStart=null;
-//		Date dateEnd=null;
-//		//當兩個輸入來源不等於空的時候才轉換
-//		if(condition.getStartDate() != null && condition.getEndDate() != null ) {
-//			try {
-//				dateStart=inputFormat.parse(condition.getStartDate());
-//				dateEnd=inputFormat.parse(condition.getEndDate());
-//			} catch (ParseException e) {
-//				e.printStackTrace();
-//			}
-//		} else {
-//			logger.info("日期輸入有空值 請重新確認");
-//		}
-//		//將date轉換為localDateTime
-//		LocalDateTime localDateStart=dateStart.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//		LocalDateTime localDateEnd=dateEnd.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//		
-//		GoodsReportSalesInfo goodsReportSalesInfo=new GoodsReportSalesInfo();
-//		List<BeverageOrder> beverageOrders = beverageOrderDao.findByOrderDateBetween(localDateStart,localDateEnd);
-//		//先測試單純無分頁的搜尋是否可以成功  先塞還沒有分頁之前的
-////		goodsReportSalesInfo.setGoodsReportSalesList(beverageOrders);
-//		genericPageable.setDataTotalSize(beverageOrders.size());//符合搜尋日期的總筆數(不含分頁)
-//		
-//		//page頁數從0開始   PageRequest.of(int page, int size, Sort sort)
-//		Pageable pageable = PageRequest.of(genericPageable.getCurrentPageNo()-1, genericPageable.getPageDataSize(), 
-//				Sort.by("orderID").descending()
-//			);
-//		//含分頁的搜尋
-//		List<BeverageOrder> ordersPage = beverageOrderDao.findByOrderDateBetweenAndOrderIDIsNotNull(localDateStart,localDateEnd,pageable);
-//		//給容器讓Pagination可以塞值
-//		Set<Integer> number=new HashSet<>();
-//		genericPageable.setPagination(number);
-//		
-//		
-//		//將訂單資訊&頁面相關 塞回goodsReportSalesInfo
-//		goodsReportSalesInfo.setGoodsReportSalesList(ordersPage);
-//		goodsReportSalesInfo.setGenericPageable(genericPageable);
-//		
-//		return goodsReportSalesInfo;
-//	}
-	
 	
 	public GoodsDataInfo queryGoodsData(GoodsDataCondition condition, GenericPageable genericPageable) {
 		GoodsDataInfo goodsDataInfo=new GoodsDataInfo();
@@ -237,14 +196,17 @@ public class BackendService {
 	public void exportPDF(HttpServletResponse response) throws JRException, IOException {
 		  List<BeverageGoods> goodsList = queryAllGoods();
 		  // Get file and compile it
-		  File file = ResourceUtils.getFile("classpath:Coffee.jrxml");
+		  File file = ResourceUtils.getFile("classpath:Coffee.jrxml"); //版型套用:Coffee.jrxml
+		  //compileReport編譯JasperReport報表文件
 		  JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+		  //用於List轉換成 JasperReports 需要的數據
 		  JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(goodsList);
 		  Map<String, Object> parameters = new HashMap<>();
-		  // Fill Jasper report
+		  // 填充 JasperReport報表: 
+		  // 參數對應為:編譯後的 JasperReport報表,報表所需參數,報表來源資料
 		  JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-		  // Export report
-//		        JasperExportManager.exportReportToPdfFile(jasperPrint,"/Users/mac_home/Downloads/goodsList.pdf");
+		  // 產生報表: 
+		  // 參數對應為:已經填好的報表,將報表寫入輸出流以供下載
 		  JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 		 }
 	

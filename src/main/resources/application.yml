@@ -44,15 +44,15 @@ springboot:
       maximumPoolSize: 2
       connectionTimeout: 30000
     
-  # 發送郵件配置
+  # 發送郵件配置 
 spring.mail:
   # SMTP伺服器地址
   host: smtp.gmail.com
   # SMTP伺服器端口號 Gmail 的 SMTP 服務預設使用 587 端口，但有時也可以使用 465 端口進行 SSL 連接
   # 原本試587不行 現在465可以
   port: 465
-  username: #請填信箱
-  password: #請填帳號
+  username: #補輸入email 請填入
+  password: #補輸入密碼 請填入
   properties:
   # 開啟用戶身份驗證
     mail.smtp.auth: true

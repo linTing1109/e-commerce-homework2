@@ -11,15 +11,10 @@ import lombok.experimental.SuperBuilder;
 public class OrderVo {
 
 	private long orderID;
-	
 	private LocalDateTime orderDate;
-
 	private String customerID;
-
 	private long goodsID;
-
 	private long goodsBuyPrice;
-
 	private long buyQuantity;
 	
 }

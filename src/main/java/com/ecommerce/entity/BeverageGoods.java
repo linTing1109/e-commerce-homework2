@@ -21,37 +21,45 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
-@NoArgsConstructor
-@Data
-@ToString (exclude = {"beverageOrders"})
-@Entity
-@EqualsAndHashCode(of = {"goodsID"})
-@Table(name = "BEVERAGE_GOODS", schema="LOCAL")
-public class BeverageGoods { 
-	@Id
+//lombok部分
+@SuperBuilder //允許預設建構式 也可以寫建構者模式 (不使用Builder是因為這樣外面就不可直接使用 ex:findAll背後有預設建構者)
+@NoArgsConstructor //無參數建構式
+@Data  //lombok使用
+@ToString (exclude = {"beverageOrders"}) //生成toString 但是排除beverageOrders
+@EqualsAndHashCode(of = {"goodsID"}) //自動生成equals & hashCode 只考慮goodsID變數
+
+@Entity //標註類別為一個資料庫實體
+@Table(name = "BEVERAGE_GOODS", schema="LOCAL") //設置實際對應的資料表名稱及來源 schema
+public class BeverageGoods {
+	
+	@Id  //主鍵
+	//定義生成為序列SEQUENCE,生成器generator名稱
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BEVERAGE_GOODS_SEQ_GEN")
+	//生成器名稱,序列的名稱,每次加1
     @SequenceGenerator(name = "BEVERAGE_GOODS_SEQ_GEN", sequenceName = "BEVERAGE_GOODS_SEQ", allocationSize = 1)
-	@Column(name = "GOODS_ID")
+	@Column(name = "GOODS_ID") //對應資料表的欄位名:GOODS_ID
 	private long goodsID;//商品編號
 	
-	@Column(name = "GOODS_NAME")
+	@Column(name = "GOODS_NAME") //對應資料表的欄位名:GOODS_NAME
 	private String goodsName;//商品名稱
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION") //對應資料表的欄位名:DESCRIPTION
 	private String description;//商品描述
 	
-	@Column(name = "PRICE")
+	@Column(name = "PRICE") //對應資料表的欄位名:PRICE
 	private int goodsPrice;//商品價格
 	
-	@Column(name = "QUANTITY")
+	@Column(name = "QUANTITY") //對應資料表的欄位名:QUANTITY
 	private int goodsQuantity;//商品庫存
 	
-	@Column(name = "IMAGE_NAME")
+	@Column(name = "IMAGE_NAME") //對應資料表的欄位名:IMAGE_NAME
 	private String goodsImageName;//商品圖片名稱
 	
-	@Column(name = "STATUS")
+	@Column(name = "STATUS") //對應資料表的欄位名:STATUS
 	private String status;//商品狀態 1:上架 0:下架
+	
+	//-----------------------------------------------------------------------------------------------
+	//下面的部分是在練習雙向一對多關係,實際專題並沒有使用到
 	
 	// 避免聯集查詢被動觸發遞迴查尋的問題(java.lang.StackOverflowError)
 	@JsonIgnore

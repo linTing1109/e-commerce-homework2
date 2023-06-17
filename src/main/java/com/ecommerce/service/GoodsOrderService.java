@@ -1,14 +1,11 @@
 package com.ecommerce.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +14,13 @@ import com.ecommerce.dao.BeverageGoodsDao;
 import com.ecommerce.dao.BeverageOrderDao;
 import com.ecommerce.entity.BeverageGoods;
 import com.ecommerce.entity.BeverageOrder;
-import com.ecommerce.vo.GenericPageable;
 import com.ecommerce.vo.GoodsOrderVo;
-import com.ecommerce.vo.GoodsReportSales;
-import com.ecommerce.vo.GoodsReportSalesInfo;
-import com.ecommerce.vo.GoodsSalesReportCondition;
 import com.ecommerce.vo.OrderVo;
 
 
 @Service
 public class GoodsOrderService {
-	private static Logger logger = LoggerFactory.getLogger(GoodsOrderService.class);
+//	private static Logger logger = LoggerFactory.getLogger(GoodsOrderService.class);
 	
 	@Autowired
 	private BeverageGoodsDao beverageGoodsDao;

@@ -18,17 +18,20 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement; 
 
-@Configuration
-@EnableTransactionManagement
-@EnableJpaRepositories(
+@Configuration //SpringBoot專案 標記類為配置類
+@EnableTransactionManagement //資料庫教義管理
+@EnableJpaRepositories( //啟用Spring Data JPA 功能
+	//實體管理工廠 可自行控制Transaction交易管理	
 	entityManagerFactoryRef = "oracleEntityManagerFactory",
+	//可在Service method上標註使用@Transactional
 	transactionManagerRef = "oracleTransactionManager", 
+	//設置 @Repository DAO class 的 Package 路徑
 	basePackages = { "com.ecommerce.dao" }
 )
 public class OracleDataSourceConfig { 
 
    @Autowired
-   @Qualifier("oracle")
+   @Qualifier("oracle") //指定要注入的DataSource Bean 名稱(在DB_DataSourceConfig那邊設定的名稱)
    private DataSource dataSource; 
 
    @Autowired
@@ -38,13 +41,13 @@ public class OracleDataSourceConfig {
    private JpaProperties jpaProperties; 
 
    @Primary
-   @Bean(name = "oracleEntityManager")
+   @Bean(name = "oracleEntityManager") //CriteriaQuery(注入EntityManager以建立並取得CriteriaBuilder進行進階動態查詢標準查詢)
    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
       return entityManagerFactory(builder).getObject().createEntityManager();
    } 
 
    @Primary
-   @Bean(name = "oracleEntityManagerFactory")
+   @Bean(name = "oracleEntityManagerFactory") //可自行控制Transaction交易管理
    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder) {
       return builder.dataSource(dataSource)
     		  .properties(getVendorProperties())
@@ -56,7 +59,7 @@ public class OracleDataSourceConfig {
    } 
 
    @Primary
-   @Bean(name = "oracleTransactionManager")
+   @Bean(name = "oracleTransactionManager") //交易管理
    public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
       return new JpaTransactionManager(entityManagerFactory(builder).getObject());
    }

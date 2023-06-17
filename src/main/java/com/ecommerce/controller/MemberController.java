@@ -33,18 +33,20 @@ import io.swagger.annotations.ApiOperation;
 //對應 React axios 設置 {withCredentials: true} HttpHeader就能帶有Cookie夾帶JESSIONID 
 //Server後端必須設置 Access-Control-Allow-Origin(不能為*)、Access-Control-Allow-Credentials(必須為true)
 @CrossOrigin(origins = {"http://localhost:3000","http://localhost:8090"}, allowCredentials = "true") 
-@RestController
-@RequestMapping("/ecommerce/MemberController")
+@RestController //標註於Controller類別上 等於@Controller+@ResponseBody(JSON)
+@RequestMapping("/ecommerce/MemberController") //決定所有API共同的前綴fprefixesURL
 public class MemberController {
 	
 	private static Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
+	//透過名稱:name屬性指定要注入的資源名稱 對應到MemberConfig檔
 	@Resource(name="member")
 	private MemberInfo sessionMemberInfo;
 	
 	@Resource(name = "sessionCartGoods") //要使用不同名字就需要在這邊寫上config那邊設定的名字
 	private List<GoodsVo> cartGoods;
 	
+	//透過Autowired的方式注入不同的實作
 	@Autowired
 	private HttpSession httpSession; 
 	
@@ -54,18 +56,19 @@ public class MemberController {
 	@Autowired
 	private BeverageMemberDao beverageMemberDao;
 
-	@ApiOperation(value = "購物網-會員-檢查登入")
-	@GetMapping(value = "/checkLogin")
+	@ApiOperation(value = "購物網-會員-檢查登入") //@ApiOperation描述API功能說明
+	@GetMapping(value = "/checkLogin") //@GetMapping:對應http GET 資料查詢
 	public ResponseEntity<MemberInfo> checkLogin() {
 		
 		logger.info("HttpSession checkLogin:" + httpSession.getId());
 		logger.info("CheckLogin:" + sessionMemberInfo.toString());
-		return ResponseEntity.ok(sessionMemberInfo);
+		return ResponseEntity.ok(sessionMemberInfo);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "購物網-會員-登入")
-	@PostMapping(value = "/login")
+	@ApiOperation(value = "購物網-會員-登入") //@ApiOperation描述API功能說明
+	@PostMapping(value = "/login") //@PostMapping:對應http POST 資料新增
 	public ResponseEntity<MemberInfo> login(@RequestBody MemberInfoVo memberInfoVo) {
+		//@RequestBody:標註於Controller method方法參數上 支援參數傳入JSON格式 會自動轉換參數為POJO物件
 		/*
 			{
 			  "identificationNo": "A124243295",
@@ -96,20 +99,20 @@ public class MemberController {
 		
 		logger.info("After:" + sessionMemberInfo.toString());
 		
-		return ResponseEntity.ok(sessionMemberInfo);
+		return ResponseEntity.ok(sessionMemberInfo);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "購物網-會員-新增會員")
-	@PostMapping(value = "/addMemberLogin")
+	@ApiOperation(value = "購物網-會員-新增會員")//@ApiOperation描述API功能說明
+	@PostMapping(value = "/addMemberLogin") //@PostMapping:對應http POST 資料新增
 	public ResponseEntity<MemberInfoVo> addMemberLogin(@RequestBody MemberInfoVo memberInfoVo) {
-		
+		//@RequestBody:標註於Controller method方法參數上 支援參數傳入JSON格式 會自動轉換參數為POJO物件
 		MemberInfoVo memberInfoVoResult=memberService.addMember(memberInfoVo);
 
-		return ResponseEntity.ok(memberInfoVoResult);
+		return ResponseEntity.ok(memberInfoVoResult);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "購物網-會員-登出") 
-	@GetMapping(value = "/logout")
+	@ApiOperation(value = "購物網-會員-登出") //@ApiOperation描述API功能說明
+	@GetMapping(value = "/logout") //@GetMapping:對應http GET 資料查詢
 	public ResponseEntity<MemberInfo> logout() {
 		logger.info("HttpSession logout:" + httpSession.getId());
 		
@@ -127,42 +130,34 @@ public class MemberController {
 		return ResponseEntity.ok(MemberInfo.builder().build());
 	}
 	
-	@ApiOperation(value = "商品加入購物車")
-	@PostMapping(value = "/addCartGoods")
+	@ApiOperation(value = "商品加入購物車")//@ApiOperation描述API功能說明
+	@PostMapping(value = "/addCartGoods")//@PostMapping:對應http POST 資料新增
 	public ResponseEntity<List<GoodsVo>> addCartGoods(@RequestBody GoodsVo goodsVo) {
 		/*
+		 *  @RequestBody:標註於Controller method方法參數上 支援參數傳入JSON格式 會自動轉換參數為POJO物件
 		 	設定直接丟id即可
 			{
 			  "goodsID": 100
-			}
-			
-			{
-			  "goodsID": 28,
-			  "goodsName": "Java Chip",
-			  "description": "暢銷口味之一，以摩卡醬、乳品及可可碎片調製，加上細緻鮮奶油及摩卡醬，濃厚的巧克力風味。",
-			  "imageName": "20130813154445805.jpg",
-			  "price": 145,
-			  "quantity": 17
 			}
 
 		 */
 		List<GoodsVo> carGoodsVos=memberService.addCartGoods(goodsVo);
 
-		return ResponseEntity.ok(carGoodsVos);
+		return ResponseEntity.ok(carGoodsVos);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "查詢購物車商品")
-	@GetMapping(value = "/queryCartGoods")
+	@ApiOperation(value = "查詢購物車商品")//@ApiOperation描述API功能說明
+	@GetMapping(value = "/queryCartGoods")//@GetMapping:對應http GET 資料查詢
 	public ResponseEntity<List<GoodsVo>> queryCartGoods() {
 
-		return ResponseEntity.ok(cartGoods);
+		return ResponseEntity.ok(cartGoods);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "刪除單一(全部)商品購物車")
-	@PostMapping(value = "/delOneGoodsCart")
+	@ApiOperation(value = "刪除單一(全部)商品購物車")//@ApiOperation描述API功能說明
+	@PostMapping(value = "/delOneGoodsCart")//@PostMapping:對應http POST
 	public ResponseEntity<List<GoodsVo>> delOneGoodsCart(@RequestBody GoodsVo goodsVoAll) {
+		//@RequestBody:標註於Controller method方法參數上 支援參數傳入JSON格式 會自動轉換參數為POJO物件
 		List<GoodsVo> remainingGoods = new ArrayList<>();//這是要存更新後的資料
-//		List<GoodsVo> changeGoods=cartGoods;
 		// 遍歷商品列表，檢查每個商品的goodsID
 	    for (GoodsVo goods : cartGoods) {
 	        if (goods.getGoodsID() != goodsVoAll.getGoodsID()) {
@@ -172,42 +167,42 @@ public class MemberController {
 	    //在將過濾好的資料塞回去購物車內
 	    cartGoods.clear(); // 清空cartGoods列表
 	    cartGoods.addAll(remainingGoods); // 將更新後的資料添加回cartGoods列表
-		return ResponseEntity.ok(cartGoods);
+		return ResponseEntity.ok(cartGoods);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
-	@ApiOperation(value = "減少單一商品購物車")
-	@PostMapping(value = "/reduceOneGoodsCart")
+	@ApiOperation(value = "減少單一商品購物車")//@ApiOperation描述API功能說明
+	@PostMapping(value = "/reduceOneGoodsCart")//@PostMapping:對應http POST
 	public ResponseEntity<List<GoodsVo>> reduceOneGoodsCart(@RequestBody GoodsVo goodsVo2) {
+		//@RequestBody:標註於Controller method方法參數上 支援參數傳入JSON格式 會自動轉換參數為POJO物件
 		List<GoodsVo> remainingGoods = new ArrayList<>();//這是要存更新後的資料
 		boolean deleted = false; // 判斷是否已執行刪除操作的標誌 執行過就不在執行
 		
 		// 遍歷商品列表，檢查每個商品的goodsID
 	    for (GoodsVo goods : cartGoods) {
 	        if (goods.getGoodsID() == goodsVo2.getGoodsID() && !deleted) {
-	        	deleted=true;//這樣之後相同的進來也不會不見
+	        		deleted=true;//這樣之後相同的進來也不會不見
 	        }else {
-	        	remainingGoods.add(goods); // 將不匹配的商品添加到剩餘商品列表
+	        		remainingGoods.add(goods); // 將不匹配的商品添加到剩餘商品列表
 	        }
 	    }
 	    //在將過濾好的資料塞回去購物車內
 	    cartGoods.clear(); // 清空cartGoods列表
 	    cartGoods.addAll(remainingGoods); // 將更新後的資料添加回cartGoods列表
-		return ResponseEntity.ok(cartGoods);
+		return ResponseEntity.ok(cartGoods);//ResponseEntity<T>將回傳的POJO物件轉為JSON格式
 	}
 	
 	
-	@ApiOperation(value = "清空購物車商品")
-	@DeleteMapping(value = "/clearCartGoods")
+	@ApiOperation(value = "清空購物車商品")//@ApiOperation描述API功能說明
+	@DeleteMapping(value = "/clearCartGoods") //@DeleteMapping 對應http delete用於資料刪除
 	public ResponseEntity<List<GoodsVo>> clearCartGoods() {
-//		httpSession.removeAttribute("sessionCartGoods");
-//		sessionStatus.setComplete();
 		cartGoods.clear();
-		return ResponseEntity.ok(cartGoods);
+		return ResponseEntity.ok(cartGoods);//將回傳的POJO物件轉為JSON格式
 	}
 	
 	@ApiOperation(value = "購物網-前臺-會員商品訂單查詢")
 	@GetMapping(value = "/queryGoodsSales") //設計從訂單最新的開始排序(也就是orderID DESC)
 	public ResponseEntity<GoodsReportSalesInfo> queryGoodsSales(
+			//@RequestParam:用於Controller method參數上 取得http請求parameter帶入方法參數
 			 @RequestParam String startDate, @RequestParam String endDate,  
 			 @RequestParam int currentPageNo, @RequestParam int pageDataSize, @RequestParam int pagesIconSize,
 			 @RequestParam String orderByItem,@RequestParam String sort,@RequestParam String cusName) {
@@ -220,6 +215,7 @@ public class MemberController {
 		 orderByItem:goodsID,goodsBuyPrice,buyQuantity,goodsName
 		 sort:ASC/DESC
 		 */	
+		//使用建構者模式 將分別的資料塞入後 build根據屬性值建立物件實例
 		GoodsSalesReportCondition condition = GoodsSalesReportCondition.builder().startDate(startDate).endDate(endDate)
 											.sort(sort).orderByItem(orderByItem).build();
 		
@@ -228,6 +224,6 @@ public class MemberController {
 		
 		GoodsReportSalesInfo goodsReportSalesInfo = memberService.queryGoodsSales(condition, genericPageable,cusName);
 		
-		return ResponseEntity.ok(goodsReportSalesInfo);
+		return ResponseEntity.ok(goodsReportSalesInfo);//將回傳的POJO物件轉為JSON格式
 	}
 }

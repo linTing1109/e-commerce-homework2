@@ -1,36 +1,31 @@
 package com.ecommerce.entity;
 
-
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
-@NoArgsConstructor
-@Data
-@Entity
-@Table(name = "BEVERAGE_MEMBER", schema="LOCAL")
+//lombok部分
+@SuperBuilder //允許預設建構式 也可以寫建構者模式 (不使用Builder是因為這樣外面就不可直接使用 ex:findAll背後有預設建構者)
+@NoArgsConstructor //無參數建構式
+@Data //lombok使用
+
+@Entity //標註類別為一個資料庫實體
+@Table(name = "BEVERAGE_MEMBER", schema="LOCAL") //設置實際對應的資料表名稱及來源 schema
 public class BeverageMember {
-	@Id
-	@Column(name = "IDENTIFICATION_NO")
+	@Id //主鍵
+	@Column(name = "IDENTIFICATION_NO") //對應資料表的欄位名:IDENTIFICATION_NO
 	private String identificationNo;//會員帳號
 	
-	@Column(name = "PASSWORD")
+	@Column(name = "PASSWORD") //對應資料表的欄位名:PASSWORD
 	private String password;//會員密碼
 	
-	@Column(name = "CUSTOMER_NAME")
+	@Column(name = "CUSTOMER_NAME") //對應資料表的欄位名:CUSTOMER_NAME
 	private String customerName;//會員名稱
 	
 //	// 避免聯集查詢被動觸發遞迴查尋的問題(java.lang.StackOverflowError)

@@ -14,8 +14,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
-@Configuration
-@EnableSwagger2
+@Configuration //標記類為配置類
+@EnableSwagger2 //啟用Swagger集成和使用
 public class SwaggerConfig {  
 
    private static final String splitor = ";"; 

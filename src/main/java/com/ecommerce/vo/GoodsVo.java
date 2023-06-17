@@ -2,8 +2,6 @@ package com.ecommerce.vo;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.entity.BeverageMember;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,19 +14,12 @@ import lombok.experimental.SuperBuilder;
 public class GoodsVo {
 	
 	private long goodsID;
-	
 	private String goodsName;
-	
 	private String description;
-	
 	private int price;
-	
 	private int quantity;
-	
 	private MultipartFile file;
-	
 	private String imageName;
-	
 	private String status;
 	
 }

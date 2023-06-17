@@ -1,12 +1,5 @@
 package com.ecommerce.vo;
 
-import java.util.List;
-
-import com.ecommerce.entity.BeverageGoods;
-import com.ecommerce.entity.BeverageOrder;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,9 +7,9 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class GoodsSalesReportCondition {
-	private String startDate;
-	private String endDate;
-	private String sort;
-	private String orderByItem;
+public class GoodsSalesReportCondition { //銷售報表查詢條件
+	private String startDate; //開始時間
+	private String endDate; //結束時間
+	private String sort; //ASC/DESC
+	private String orderByItem; //排序項目
 }
